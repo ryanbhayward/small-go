@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stack>
+#include <set>
 
 enum Color { EMPTY = -1, BLACK = 0, WHITE = 1 };
 
@@ -15,6 +16,7 @@ class Go {
   ~Go(); 
 
   std::stack<Board> board;
+  std::set<long> superko_hist;
   int to_move;
 
   // private methods

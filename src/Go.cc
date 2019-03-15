@@ -9,6 +9,8 @@ bool Go::make_move(int, int, int) {
 }
 
 void Go::undo_move() {
+  const Board& old = board.top();
+  superko_hist.erase(old.h);
   board.pop();
   switch_to_move();
 }
