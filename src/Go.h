@@ -11,13 +11,18 @@ struct Board {
 
 class Go {
 
+  Go();
+  ~Go(); 
+
   std::stack<Board> board;
+  int to_move;
 
   // private methods
   long empty_points();
+  void switch_to_move();
 
  public:
-  bool make_move(int, int);
+  bool make_move(int row, int col, int color);
   void undo_move();
   float score();
 };
