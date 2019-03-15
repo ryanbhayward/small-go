@@ -1,6 +1,6 @@
 #include "Go.h"
 
-Go::Go() {}
+Go::Go(int _n) : to_move(BLACK), n(_n) {}
 
 Go::~Go() {}
 

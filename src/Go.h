@@ -12,12 +12,13 @@ struct Board {
 
 class Go {
 
-  Go();
+  Go(int n);
   ~Go(); 
 
   std::stack<Board> board;
   std::set<long> superko_hist;
   int to_move;
+  int n;
 
   // private methods
   long empty_points();
