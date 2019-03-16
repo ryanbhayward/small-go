@@ -1,5 +1,5 @@
 
-#include "board.h"
+#include "Go.h"
 
 int main() {
   return 0;

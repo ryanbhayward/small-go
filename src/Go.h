@@ -2,6 +2,8 @@
 
 #include <stack>
 #include <set>
+#include <bitset>
+#include <map>
 
 enum Color { EMPTY = -1, BLACK = 0, WHITE = 1 };
 
@@ -25,9 +27,11 @@ class Go {
   void switch_to_move();
 
  public:
+  static std::map<int, char> color_chars;
   bool make_move(int row, int col, int color);
   void undo_move();
   float score();
+  void print_board();
 };
 
 
