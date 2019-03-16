@@ -31,7 +31,7 @@ class Go {
   
   bool make_move(int row, int col, int color);
   void undo_move();
-  float score();
+  float score(int color);
   void print_board();
 };
 

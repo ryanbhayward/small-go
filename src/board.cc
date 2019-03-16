@@ -20,6 +20,14 @@ Board::Board(const Board& other) {
   n = other.n;
 }
 
+bool Board::move(int, int, int) {
+  return false;
+}
+
+float Board::score(int) {
+  return 0.0;
+}
+
 void Board::print() {
   std::bitset<64> b(stones[BLACK]);
   std::bitset<64> w(stones[BLACK]);

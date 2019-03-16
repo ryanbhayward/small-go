@@ -20,6 +20,9 @@ struct Board {
   Board(int _n);
   Board(const Board& other);
 
+  bool move(int row, int col, int color);
+  float score(int color);
+
   // helper functions
   long empty_points();
   void print();

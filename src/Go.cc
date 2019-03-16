@@ -18,7 +18,7 @@ void Go::undo_move() {
   switch_to_move();
 }
 
-float Go::score() {
+float Go::score(int) {
   return 0.0;
 }
 
