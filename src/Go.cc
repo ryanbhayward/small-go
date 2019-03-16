@@ -6,7 +6,10 @@ std::map<int, char> Go::color_chars = {
   {EMPTY, '.'}, {BLACK, 'b'}, {WHITE, 'w'} 
 };
 
-Go::Go(int _n) : to_move(BLACK), n(_n) {}
+Go::Go(int _n) : to_move(BLACK), n(_n) {
+  Board b;
+  board.push(b);
+}
 
 Go::~Go() {}
 
