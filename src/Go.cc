@@ -7,8 +7,23 @@ Go::Go(int _n) : to_move(BLACK), n(_n) {
 
 Go::~Go() {}
 
-bool Go::make_move(int, int, int) {
-  return false;
+bool Go::make_move(int row, int col, Color color) {
+  // first copy
+  boards.push(boards.top());
+  bool res = boards.top().move(row, col, color);
+  if (!res) {
+    boards.pop();
+  } else {
+    // move succeeded, check superko
+    if (superko_hist.find(boards.top().h) != superko_hist.end()) {
+      res = false;
+      boards.pop();
+    } else {
+      superko_hist.insert(boards.top().h);
+    }
+  }
+  
+  return res;
 }
 
 void Go::undo_move() {
@@ -18,7 +33,7 @@ void Go::undo_move() {
   switch_to_move();
 }
 
-float Go::score(int) {
+float Go::score(Color) {
   return 0.0;
 }
 
