@@ -37,8 +37,39 @@ Board::Board(const Board& other) {
   n = other.n;
 }
 
-bool Board::move(int, int, int) {
-  return false;
+Color Board::opponent(Color color) {
+  return color == BLACK ? WHITE : BLACK;
+}
+
+bool Board::move(int row, int col, Color color) {
+  if (row >=n || col >= n || row < 0 || col < 0)
+    return false;
+
+  long point = 1 << (row*n + col);
+  // place the stone
+  stones[color] |= point;
+  Color opp = opponent(color);
+  // find neighbors of opponent color and check if they are captured
+  long opp_groups[4] = {0, 0, 0, 0};
+  opp_groups[0] = (point << 1) & stones[opp] & ~edge_mask(n, RIGHT);
+  opp_groups[1] = (point >> 1) & stones[opp] & ~edge_mask(n, LEFT);
+  opp_groups[2] = (point << 1) & stones[opp] & ~edge_mask(n, TOP);
+  opp_groups[3] = (point >> 1) & stones[opp] & ~edge_mask(n, BOTTOM);
+  
+  long group;
+  for(int i = 0; i < 4; i++) {
+    if (opp_groups[i]) {
+      group = get_group(opp_groups[i]);
+      if (!get_liberties(group)) {
+        // capture opponent stones
+        stones[opp] &= ~group;
+      }
+    }
+  }
+
+  group = get_group(point);
+  // check suicide
+  return get_liberties(group) != 0;
 }
 
 long Board::get_neighbors(long group) {
@@ -54,13 +85,12 @@ long Board::get_neighbors(long group) {
   return neighbors & ~group;
 }
 
-long Board::liberties(long group) {
+long Board::get_liberties(long group) {
   return get_neighbors(group) & ~(stones[BLACK] | stones[WHITE]);
 }
 
-long Board::group(unsigned short point) {
+long Board::get_group(long board_point) {
   long group = 0;
-  long board_point = 1 << point;
   long black_mask = board_point & stones[BLACK];
   long white_mask = board_point & stones[WHITE];
   
@@ -82,7 +112,7 @@ long Board::group(unsigned short point) {
   return group;
 }
 
-float Board::score(int) {
+float Board::score(Color) {
   return 0.0;
 }
 

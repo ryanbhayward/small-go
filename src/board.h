@@ -20,14 +20,15 @@ struct Board {
   Board(int _n);
   Board(const Board& other);
 
-  bool move(int row, int col, int color);
+  bool move(int row, int col, Color color);
   // return the neighboring points of group
   long get_neighbors(long group);
   // return the liberties of group
-  long liberties(long group);
+  long get_liberties(long group);
   // return the group of stones stone at position point is part of
-  long group(unsigned short point);
-  float score(int color);
+  long get_group(long board_point);
+  float score(Color color);
+  Color opponent(Color color);
 
   // helper functions
   long empty_points();
