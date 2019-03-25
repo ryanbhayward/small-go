@@ -3,6 +3,7 @@
 #include <iostream>
 
 Go::Go(int _n) : to_move(BLACK), n(_n) {
+  Board::init_zobrist();
   Board b(_n);
   boards.push(b);
 }
@@ -13,7 +14,6 @@ bool Go::make_move(int row, int col, Color color) {
   // first copy
   boards.push(boards.top());
   bool res = boards.top().move(row, col, color);
-  std::cout << res << std::endl;
   if (!res) {
     boards.pop();
   } else {

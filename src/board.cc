@@ -24,6 +24,16 @@ long edge_mask(unsigned short n, Border border) {
   return mask; 
 }
 
+void Board::init_zobrist() {
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 64; j++) {
+      z_table[i][j] = std::rand();
+    }
+  }
+}
+
+long Board::z_table[2][64] = {{0}};
+
 Board::Board(int _n) : n(_n) {
   stones[BLACK] = 0;
   stones[WHITE] = 0;
@@ -36,6 +46,14 @@ Board::Board(const Board& other) {
   stones[WHITE] = other.stones[WHITE];
   h = other.h;
   n = other.n;
+  size_mask = other.size_mask;
+}
+
+void Board::update_zobrist(long group, Color color) {
+  std::bitset<64> b(group);
+  for (int i = 0; i < n*n; i++) {
+    if (b.test(i)) h ^= z_table[color][i];
+  }
 }
 
 Color Board::opponent(Color color) {
@@ -43,12 +61,15 @@ Color Board::opponent(Color color) {
 }
 
 bool Board::move(int row, int col, Color color) {
-  if (row >=n || col >= n || row < 0 || col < 0)
-    return false;
+  if (row >=n || col >= n || row < 0 || col < 0) return false;
 
   long point = 1 << (row*n + col);
+  if (!(point & empty_points())) return false;
+  
+
   // place the stone
   stones[color] |= point;
+  update_zobrist(point, color);
   Color opp = opponent(color);
   // find neighbors of opponent color and check if they are captured
   long opp_groups[4] = {0, 0, 0, 0};
@@ -64,6 +85,7 @@ bool Board::move(int row, int col, Color color) {
       if (!get_liberties(group)) {
         // capture opponent stones
         stones[opp] &= ~group;
+        update_zobrist(group, opp);
       }
     }
   }
@@ -119,7 +141,7 @@ float Board::score(Color) {
 
 void Board::print() {
   std::bitset<64> b(stones[BLACK]);
-  std::bitset<64> w(stones[BLACK]);
+  std::bitset<64> w(stones[WHITE]);
   Color color;
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {

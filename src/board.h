@@ -29,9 +29,12 @@ struct Board {
   long get_group(long board_point);
   float score(Color color);
   Color opponent(Color color);
+  void update_zobrist(long group, Color color);
 
   // helper functions
   long empty_points();
   void print();
 
+  static long z_table[2][64];
+  static void init_zobrist();
 };
