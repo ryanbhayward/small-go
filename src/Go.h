@@ -28,7 +28,6 @@ class Go {
   Go(int n);
   ~Go(); 
 
-  
   bool make_move(int row, int col, Color color);
   void undo_move();
   float score(Color color);

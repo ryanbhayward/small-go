@@ -7,6 +7,7 @@ std::map<int, char> color_chars = {
 };
 
 enum Border { LEFT = 0, RIGHT = 1, TOP = 2, BOTTOM = 3 };
+// will probably want to pre-compute these
 long edge_mask(unsigned short n, Border border) {
   long mask = 0;
   for (unsigned short i = 0; i < n; i++) {
@@ -90,7 +91,7 @@ long Board::get_liberties(long group) {
 }
 
 long Board::get_group(long board_point) {
-  long group = 0;
+  long group = board_point;
   long black_mask = board_point & stones[BLACK];
   long white_mask = board_point & stones[WHITE];
   
@@ -103,10 +104,10 @@ long Board::get_group(long board_point) {
   // iteratively compute neighboring points of same color by computing
   // neighbors and masking based on color
   // if we get no change, we're done
-  long old =  board_point;
+  long old = 0;
   while (group != old) {
     old = group;
-    group = get_neighbors(old) & color_mask;
+    group = (old | get_neighbors(old)) & color_mask;
   }
 
   return group;

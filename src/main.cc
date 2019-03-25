@@ -1,9 +1,11 @@
 #include <iostream>
 
 #include "Go.h"
+#include "gtp_interface.h"
 
 int main() {
   Go game(3);
-  game.print_board();
+  GTP_interface gtp(&game, true);
+  gtp.listen();
   return 0;
 }

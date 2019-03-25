@@ -33,4 +33,5 @@ struct Board {
   // helper functions
   long empty_points();
   void print();
+
 };

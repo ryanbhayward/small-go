@@ -1,5 +1,7 @@
 #include "Go.h"
 
+#include <iostream>
+
 Go::Go(int _n) : to_move(BLACK), n(_n) {
   Board b(_n);
   boards.push(b);
@@ -11,6 +13,7 @@ bool Go::make_move(int row, int col, Color color) {
   // first copy
   boards.push(boards.top());
   bool res = boards.top().move(row, col, color);
+  std::cout << res << std::endl;
   if (!res) {
     boards.pop();
   } else {
@@ -22,7 +25,6 @@ bool Go::make_move(int row, int col, Color color) {
       superko_hist.insert(boards.top().h);
     }
   }
-  
   return res;
 }
 
@@ -37,7 +39,9 @@ float Go::score(Color) {
   return 0.0;
 }
 
-void Go::print_board() { boards.top().print(); }
+void Go::print_board() { 
+  boards.top().print(); 
+}
 
 void Go::switch_to_move() {
   to_move = (to_move == BLACK) ? WHITE : BLACK;
