@@ -60,10 +60,10 @@ Color Board::opponent(Color color) {
   return color == BLACK ? WHITE : BLACK;
 }
 
-bool Board::move(int row, int col, Color color) {
-  if (row >=n || col >= n || row < 0 || col < 0) return false;
+bool Board::move(int point_ind, Color color) {
+  if (point_ind < 0 || point_ind >= n*n) return false;
 
-  long point = 1 << (row*n + col);
+  long point = 1 << point_ind;
   if (!(point & empty_points())) return false;
 
   // place the stone
@@ -137,8 +137,8 @@ long Board::get_group(long board_point) {
 float Board::score(Color color) {
   // the following is not portable to non-GNU compilers, if this is a problem 
   // we can find a workaround
-  unsigned int b = __builtin_popcountl(stones[BLACK]);
-  unsigned int w = __builtin_popcountl(stones[WHITE]);
+  int b = __builtin_popcountl(stones[BLACK]);
+  int w = __builtin_popcountl(stones[WHITE]);
   std::bitset<64> empty(empty_points());
   for(int i = 0; i < n*n; i++) {
     if (empty.test(i)) {

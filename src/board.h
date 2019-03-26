@@ -20,7 +20,7 @@ struct Board {
   Board(int _n);
   Board(const Board& other);
 
-  bool move(int row, int col, Color color);
+  bool move(int point_ind, Color color);
   // return the neighboring points of group
   long get_neighbors(long group);
   // return the liberties of group

@@ -14,12 +14,16 @@
  * digit
 
  * */
+
+constexpr int PASS_IND = -1;
+
 class Go {
 
   std::stack<Board> boards;
   std::set<long> superko_hist;
   int to_move;
   int n;
+  int passes;
 
   // private methods
   void switch_to_move();
@@ -28,11 +32,13 @@ class Go {
   Go(int n);
   ~Go(); 
 
-  bool make_move(int row, int col, Color color);
+  bool make_move(int point_ind, Color color);
   bool undo_move();
   float score(Color color);
   long get_legal_moves(Color color);
   void print_board();
+  int size();
+  bool game_over();
 };
 
 

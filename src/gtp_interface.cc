@@ -59,7 +59,7 @@ bool GTP_interface::play_move_cmd(std::string cmd) {
   int row = x - 'a';
   int col = y - '1';
   Color c = color == 'b' ? BLACK : WHITE;
-  return game->make_move(row, col, c);
+  return game->make_move(row * game->size() + col, c);
 }
   
 bool GTP_interface::gen_move_cmd(std::string) {

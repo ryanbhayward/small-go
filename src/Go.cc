@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Go::Go(int _n) : to_move(BLACK), n(_n) {
+Go::Go(int _n) : to_move(BLACK), n(_n), passes(0) {
   Board::init_zobrist();
   Board b(_n);
   boards.push(b);
@@ -10,10 +10,26 @@ Go::Go(int _n) : to_move(BLACK), n(_n) {
 
 Go::~Go() {}
 
-bool Go::make_move(int row, int col, Color color) {
+int Go::size() { return n; }
+
+bool Go::game_over() {
+  if (passes > 1) return true;
+  return get_legal_moves(BLACK) == 0 && get_legal_moves(WHITE) == 0;
+}
+
+bool Go::make_move(int point_ind, Color color) {
+  // check for a pass
+  if (point_ind == PASS_IND) {
+    ++passes;
+    if (to_move == color) {
+      switch_to_move();
+    }
+    return true;
+  }
+  
   // first copy
   boards.push(boards.top());
-  bool res = boards.top().move(row, col, color);
+  bool res = boards.top().move(point_ind, color);
   if (!res) {
     boards.pop();
   } else {
@@ -26,7 +42,12 @@ bool Go::make_move(int row, int col, Color color) {
     }
   }
 
-  if (res && to_move == color) switch_to_move();
+  if (res) {
+    passes = 0;
+    if (to_move == color) {
+      switch_to_move();
+    }
+  }
   return res;
 }
 
@@ -53,14 +74,12 @@ void Go::switch_to_move() {
 
 long Go::get_legal_moves(Color color) {
   std::bitset<64> legal(boards.top().empty_points());
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      if (legal.test(i*n + j)) {
-        if (!make_move(i, j, color)) {
-          legal.reset(i*n + j);
-        } else {
-          undo_move();
-        }
+  for (int i = 0; i < n*n; i++) {
+    if (legal.test(i)) {
+      if (!make_move(i, color)) {
+        legal.reset(i);
+      } else {
+        undo_move();
       }
     }
   }
