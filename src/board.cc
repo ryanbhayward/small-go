@@ -74,8 +74,8 @@ bool Board::move(int row, int col, Color color) {
   long opp_groups[4] = {0, 0, 0, 0};
   opp_groups[0] = (point << 1) & stones[opp] & ~edge_mask(n, RIGHT);
   opp_groups[1] = (point >> 1) & stones[opp] & ~edge_mask(n, LEFT);
-  opp_groups[2] = (point << n) & stones[opp] & ~edge_mask(n, BOTTOM);
-  opp_groups[3] = (point >> n) & stones[opp] & ~edge_mask(n, TOP);
+  opp_groups[2] = (point << n) & stones[opp];
+  opp_groups[3] = (point >> n) & stones[opp];
   
   long group;
   for(int i = 0; i < 4; i++) {
@@ -101,9 +101,9 @@ long Board::get_neighbors(long group) {
   // shift right, remove left border neighbors
   neighbors |= (group >> 1) & ~edge_mask(n, LEFT); 
   // shift down, remove top border neighbors
-  neighbors |= (group << n) & ~edge_mask(n, BOTTOM); 
+  neighbors |= (group << n); 
   // shift up, remove bottomom border neighbors
-  neighbors |= (group >> n) & ~edge_mask(n, TOP); 
+  neighbors |= (group >> n); 
   return size_mask & neighbors & ~group;
 }
 
@@ -120,7 +120,7 @@ long Board::get_group(long board_point) {
   if (!(white_mask | black_mask)) return group;
 
   // figure out which color it actually is
-  long color_mask = black_mask != 0 ? black_mask : white_mask;
+  long color_mask = black_mask != 0 ? stones[BLACK] : stones[WHITE];
 
   // iteratively compute neighboring points of same color by computing
   // neighbors and masking based on color
@@ -128,7 +128,7 @@ long Board::get_group(long board_point) {
   long old = 0;
   while (group != old) {
     old = group;
-    group = (old | get_neighbors(old)) & color_mask;
+    group = (group | get_neighbors(group)) & color_mask;
   }
 
   return group;
