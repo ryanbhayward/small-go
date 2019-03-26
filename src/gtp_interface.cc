@@ -5,6 +5,10 @@
 
 std::regex GTP_interface::show_reg("showboard");
 std::regex GTP_interface::move_reg("play (b|w) [[:alpha:]][[:digit:]]");
+std::regex GTP_interface::genmove_reg("genmove (b|w)");  
+std::regex GTP_interface::undo_reg("undo");
+std::regex GTP_interface::legal_reg("legal_moves (b|w)");
+std::regex GTP_interface::score_reg("score");
 
 void GTP_interface::listen() {
   std::string cmd;
@@ -21,6 +25,14 @@ bool GTP_interface::execute(std::string cmd) {
     legal = show_board_cmd();
   } else if (std::regex_match(cmd, move_reg)) {
     legal = play_move_cmd(cmd);
+  } else if (std::regex_match(cmd, genmove_reg)) {
+    legal = gen_move_cmd(cmd);
+  } else if (std::regex_match(cmd, undo_reg)) {
+    legal = undo_move_cmd();
+  } else if (std::regex_match(cmd, legal_reg)) {
+    legal = get_legal_moves_cmd(cmd);
+  } else if (std::regex_match(cmd, score_reg)) {
+    legal = score_cmd();
   } else { 
     legal = false;
   }
