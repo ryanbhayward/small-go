@@ -29,8 +29,9 @@ class Go {
   ~Go(); 
 
   bool make_move(int row, int col, Color color);
-  void undo_move();
+  bool undo_move();
   float score(Color color);
+  long get_legal_moves(Color color);
   void print_board();
 };
 

@@ -49,3 +49,19 @@ bool GTP_interface::play_move_cmd(std::string cmd) {
   Color c = color == 'b' ? BLACK : WHITE;
   return game->make_move(row, col, c);
 }
+  
+bool GTP_interface::gen_move_cmd(std::string) {
+  return false;
+}
+
+bool GTP_interface::undo_move_cmd() { return game->undo_move(); }
+ 
+bool GTP_interface::get_legal_moves_cmd(std::string) {
+  return false;
+}
+
+bool GTP_interface::score_cmd() {
+  std::cout << game->score(BLACK) << std::endl;
+  return true;
+}
+
