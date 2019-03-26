@@ -37,8 +37,8 @@ bool Go::undo_move() {
   return true;
 }
 
-float Go::score(Color) {
-  return 0.0;
+float Go::score(Color c) {
+  return boards.top().score(c);
 }
 
 void Go::print_board() { 

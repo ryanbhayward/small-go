@@ -134,8 +134,24 @@ long Board::get_group(long board_point) {
   return group;
 }
 
-float Board::score(Color) {
-  return 0.0;
+float Board::score(Color color) {
+  // the following is not portable to non-GNU compilers, if this is a problem 
+  // we can find a workaround
+  unsigned int b = __builtin_popcountl(stones[BLACK]);
+  unsigned int w = __builtin_popcountl(stones[WHITE]);
+  std::bitset<64> empty(empty_points());
+  for(int i = 0; i < n*n; i++) {
+    if (empty.test(i)) {
+      // have an empty point, check if all neighbors are one color
+      long point = 1 << i;
+      long neighbors = get_neighbors(point);
+      if ((neighbors & stones[BLACK]) == neighbors) b++;
+      else if ((neighbors & stones[WHITE]) == neighbors) w++;
+    }
+  }
+
+  float score = color == BLACK ? 1.0 * (b-w) : 1.0 * (w-b);
+  return score;
 }
 
 void Board::print() {
