@@ -25,6 +25,8 @@ bool Go::make_move(int row, int col, Color color) {
       superko_hist.insert(boards.top().h);
     }
   }
+
+  if (res && to_move == color) switch_to_move();
   return res;
 }
 
