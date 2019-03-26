@@ -49,6 +49,18 @@ void Go::switch_to_move() {
   to_move = (to_move == BLACK) ? WHITE : BLACK;
 }
 
-long Go::get_legal_moves(Color) {
-  return boards.top().empty_points();
+long Go::get_legal_moves(Color color) {
+  std::bitset<64> legal(boards.top().empty_points());
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (legal.test(i*n + j)) {
+        if (!make_move(i, j, color)) {
+          legal.reset(i*n + j);
+        } else {
+          undo_move();
+        }
+      }
+    }
+  }
+  return legal.to_ulong();
 }
