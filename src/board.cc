@@ -65,7 +65,6 @@ bool Board::move(int row, int col, Color color) {
 
   long point = 1 << (row*n + col);
   if (!(point & empty_points())) return false;
-  
 
   // place the stone
   stones[color] |= point;
@@ -75,14 +74,14 @@ bool Board::move(int row, int col, Color color) {
   long opp_groups[4] = {0, 0, 0, 0};
   opp_groups[0] = (point << 1) & stones[opp] & ~edge_mask(n, RIGHT);
   opp_groups[1] = (point >> 1) & stones[opp] & ~edge_mask(n, LEFT);
-  opp_groups[2] = (point << 1) & stones[opp] & ~edge_mask(n, TOP);
-  opp_groups[3] = (point >> 1) & stones[opp] & ~edge_mask(n, BOTTOM);
+  opp_groups[2] = (point << n) & stones[opp] & ~edge_mask(n, BOTTOM);
+  opp_groups[3] = (point >> n) & stones[opp] & ~edge_mask(n, TOP);
   
   long group;
   for(int i = 0; i < 4; i++) {
     if (opp_groups[i]) {
       group = get_group(opp_groups[i]);
-      if (!get_liberties(group)) {
+      if (get_liberties(group) == 0) {
         // capture opponent stones
         stones[opp] &= ~group;
         update_zobrist(group, opp);
@@ -102,10 +101,10 @@ long Board::get_neighbors(long group) {
   // shift right, remove left border neighbors
   neighbors |= (group >> 1) & ~edge_mask(n, LEFT); 
   // shift down, remove top border neighbors
-  neighbors |= (group << n) & ~edge_mask(n, TOP); 
+  neighbors |= (group << n) & ~edge_mask(n, BOTTOM); 
   // shift up, remove bottomom border neighbors
-  neighbors |= (group >> n) & ~edge_mask(n, BOTTOM); 
-  return neighbors & ~group;
+  neighbors |= (group >> n) & ~edge_mask(n, TOP); 
+  return size_mask & neighbors & ~group;
 }
 
 long Board::get_liberties(long group) {
