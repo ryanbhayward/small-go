@@ -34,6 +34,7 @@ class Solver {
   int nodes;
   bool verbose;
   Result alpha_beta(Go *game, Color c, float alpha, float beta, int depth);
+  void display_results(Result r, float duration);
 
  public:
   Solver() : nodes(0), verbose(true) {}

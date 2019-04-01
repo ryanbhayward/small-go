@@ -8,13 +8,7 @@ int Solver::solve(Go *game, Color c) {
   Result r = alpha_beta(game, c, -10000, 10000, 0);
   auto dur = std::chrono::duration_cast<float_seconds>(Clock::now() - start);
   if (verbose) {
-    std::cout << "value: " << r.value << " move: " << r.best_move;
-    std::cout << " nodes/sec: " << nodes / dur.count() << std::endl;
-    std::cout << "pv:";
-    for (int m : r.pv) {
-      std::cout << " " << m << " ";
-    }
-    std::cout << std::endl;
+    display_results(r, dur.count());
   }
   return r.best_move;
 }
@@ -56,3 +50,14 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
 
   return best;
 }
+
+void Solver::display_results(Result r, float duration) {
+  std::cout << "value: " << r.value << " move: " << r.best_move;
+  std::cout << " nodes/sec: " << nodes / duration << std::endl;
+  std::cout << "pv:";
+  for (int m : r.pv) {
+    std::cout << " " << m << " ";
+  }
+  std::cout << std::endl;
+}
+
