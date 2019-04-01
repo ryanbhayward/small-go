@@ -17,6 +17,7 @@
  * */
 
 constexpr int PASS_IND = -1;
+constexpr int MAX_VAL = 100000;
 
 class Go {
   std::stack<Board> boards;

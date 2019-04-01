@@ -9,7 +9,7 @@ typedef std::chrono::system_clock Clock;
 typedef std::chrono::duration<float> float_seconds;
 
 struct Result {
-  Result() : value(-10000), best_move(-1) {}
+  Result() : value(-1 * MAX_VAL), best_move(-1) {}
   float value;
   int best_move;
   std::list<int> pv;
@@ -33,8 +33,9 @@ class Solver {
  private:
   int nodes;
   bool verbose;
+  Clock::time_point start;
   Result alpha_beta(Go *game, Color c, float alpha, float beta, int depth);
-  void display_results(Result r, float duration);
+  void display_results(Result r);
 
  public:
   Solver() : nodes(0), verbose(true) {}

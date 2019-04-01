@@ -4,11 +4,10 @@
 
 int Solver::solve(Go *game, Color c) {
   nodes = 0;
-  auto start = Clock::now();
-  Result r = alpha_beta(game, c, -10000, 10000, 0);
-  auto dur = std::chrono::duration_cast<float_seconds>(Clock::now() - start);
+  start = Clock::now();
+  Result r = alpha_beta(game, c, -1 * MAX_VAL, MAX_VAL, 0);
   if (verbose) {
-    display_results(r, dur.count());
+    display_results(r);
   }
   return r.best_move;
 }
@@ -51,9 +50,10 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
   return best;
 }
 
-void Solver::display_results(Result r, float duration) {
+void Solver::display_results(Result r) {
+  auto dur = std::chrono::duration_cast<float_seconds>(Clock::now() - start);
   std::cout << "value: " << r.value << " move: " << r.best_move;
-  std::cout << " nodes/sec: " << nodes / duration << std::endl;
+  std::cout << " nodes/sec: " << nodes / dur.count() << std::endl;
   std::cout << "pv:";
   for (int m : r.pv) {
     std::cout << " " << m << " ";
