@@ -1,3 +1,4 @@
+// Copyright 2019 Chris Solinas
 #include "Go.h"
 
 #include <iostream>
@@ -14,7 +15,8 @@ int Go::size() { return n; }
 
 bool Go::game_over() {
   if (passes > 1) return true;
-  return get_legal_moves(BLACK) == 0 && get_legal_moves(WHITE) == 0;
+  return get_legal_moves(BLACK, nullptr) == 0 &&
+    get_legal_moves(WHITE, nullptr) == 0;
 }
 
 bool Go::make_move(int point_ind, Color color) {
@@ -26,7 +28,7 @@ bool Go::make_move(int point_ind, Color color) {
     }
     return true;
   }
-  
+
   // first copy
   boards.push(boards.top());
   bool res = boards.top().move(point_ind, color);
@@ -64,24 +66,34 @@ float Go::score(Color c) {
   return boards.top().score(c);
 }
 
-void Go::print_board() { 
-  boards.top().print(); 
+void Go::print_board() {
+  boards.top().print();
 }
 
 void Go::switch_to_move() {
   to_move = (to_move == BLACK) ? WHITE : BLACK;
 }
 
-long Go::get_legal_moves(Color color) {
+/**
+ * nullptr is a valid parameter value for moves if we just care to test
+ * that there are legal moves
+ **/
+long Go::get_legal_moves(Color color, std::vector<int> *moves) {
+  if (moves != nullptr)  moves->clear();
   std::bitset<64> legal(boards.top().empty_points());
   for (int i = 0; i < n*n; i++) {
     if (legal.test(i)) {
-      if (!make_move(i, color)) {
-        legal.reset(i);
-      } else {
+      if (make_move(i, color)) {
         undo_move();
+        if (moves != nullptr) moves->push_back(i);
+      } else {
+        legal.reset(i);
       }
     }
   }
+
+  // include pass move
+  moves->push_back(PASS_IND);
+
   return legal.to_ulong();
 }

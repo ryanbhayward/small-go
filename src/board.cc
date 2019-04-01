@@ -1,9 +1,10 @@
+// Copyright 2019 Chris Solinas
 #include "board.h"
 
 #include <iostream>
 
 std::map<int, char> color_chars = {
-  {EMPTY, '.'}, {BLACK, 'b'}, {WHITE, 'w'} 
+  {EMPTY, '.'}, {BLACK, 'b'}, {WHITE, 'w'}
 };
 
 enum Border { LEFT = 0, RIGHT = 1, TOP = 2, BOTTOM = 3 };
@@ -17,11 +18,11 @@ long edge_mask(unsigned short n, Border border) {
       mask |= 1 << (n*(n-1) + i);
     } else if (border == LEFT) {
       mask |= 1 << (n*(i+1) - 1);
-    } else if (border == RIGHT){
+    } else if (border == RIGHT) {
       mask |= 1 << (n*i);
     }
   }
-  return mask; 
+  return mask;
 }
 
 void Board::init_zobrist() {
@@ -76,9 +77,9 @@ bool Board::move(int point_ind, Color color) {
   opp_groups[1] = (point >> 1) & stones[opp] & ~edge_mask(n, LEFT);
   opp_groups[2] = (point << n) & stones[opp];
   opp_groups[3] = (point >> n) & stones[opp];
-  
+
   long group;
-  for(int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; i++) {
     if (opp_groups[i]) {
       group = get_group(opp_groups[i]);
       if (get_liberties(group) == 0) {
@@ -97,13 +98,13 @@ bool Board::move(int point_ind, Color color) {
 long Board::get_neighbors(long group) {
   long neighbors = 0;
   // shift left, remove right border neighbors
-  neighbors |= (group << 1) & ~edge_mask(n, RIGHT); 
+  neighbors |= (group << 1) & ~edge_mask(n, RIGHT);
   // shift right, remove left border neighbors
-  neighbors |= (group >> 1) & ~edge_mask(n, LEFT); 
+  neighbors |= (group >> 1) & ~edge_mask(n, LEFT);
   // shift down, remove top border neighbors
-  neighbors |= (group << n); 
+  neighbors |= (group << n);
   // shift up, remove bottomom border neighbors
-  neighbors |= (group >> n); 
+  neighbors |= (group >> n);
   return size_mask & neighbors & ~group;
 }
 
@@ -115,7 +116,7 @@ long Board::get_group(long board_point) {
   long group = board_point;
   long black_mask = board_point & stones[BLACK];
   long white_mask = board_point & stones[WHITE];
-  
+
   // check if point empty
   if (!(white_mask | black_mask)) return group;
 
@@ -135,12 +136,12 @@ long Board::get_group(long board_point) {
 }
 
 float Board::score(Color color) {
-  // the following is not portable to non-GNU compilers, if this is a problem 
+  // the following is not portable to non-GNU compilers, if this is a problem
   // we can find a workaround
   int b = __builtin_popcountl(stones[BLACK]);
   int w = __builtin_popcountl(stones[WHITE]);
   std::bitset<64> empty(empty_points());
-  for(int i = 0; i < n*n; i++) {
+  for (int i = 0; i < n*n; i++) {
     if (empty.test(i)) {
       // have an empty point, check if all neighbors are one color
       long point = 1 << i;

@@ -1,3 +1,4 @@
+// Copyright 2019 Chris Solinas
 #pragma once
 
 /**
