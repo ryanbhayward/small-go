@@ -29,7 +29,7 @@ struct Board {
   // return the group of stones stone at position point is part of
   long get_group(long board_point);
   float score(Color color);
-  Color opponent(Color color);
+  static Color opponent(Color color);
   void update_zobrist(long group, Color color);
 
   // helper functions

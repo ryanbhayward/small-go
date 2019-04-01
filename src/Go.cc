@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-Go::Go(int _n) : to_move(BLACK), n(_n), passes(0) {
+Go::Go(int _n) : to_move(BLACK), n(_n), passes(0), old_passes(0) {
   Board::init_zobrist();
   Board b(_n);
   boards.push(b);
@@ -14,9 +14,8 @@ Go::~Go() {}
 int Go::size() { return n; }
 
 bool Go::game_over() {
-  if (passes > 1) return true;
-  return get_legal_moves(BLACK, nullptr) == 0 &&
-    get_legal_moves(WHITE, nullptr) == 0;
+  return passes > 1 || (get_legal_moves(BLACK, nullptr) == 0 &&
+    get_legal_moves(WHITE, nullptr) == 0);
 }
 
 bool Go::make_move(int point_ind, Color color) {
@@ -45,6 +44,7 @@ bool Go::make_move(int point_ind, Color color) {
   }
 
   if (res) {
+    old_passes = passes;
     passes = 0;
     if (to_move == color) {
       switch_to_move();
@@ -59,6 +59,7 @@ bool Go::undo_move() {
   superko_hist.erase(old.h);
   boards.pop();
   switch_to_move();
+  passes = old_passes;
   return true;
 }
 
@@ -93,7 +94,9 @@ long Go::get_legal_moves(Color color, std::vector<int> *moves) {
   }
 
   // include pass move
-  moves->push_back(PASS_IND);
+  if (moves != nullptr) moves->push_back(PASS_IND);
 
   return legal.to_ulong();
 }
+
+Color Go::opponent(Color c) { return Board::opponent(c); }

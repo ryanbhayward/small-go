@@ -5,8 +5,9 @@
 #include "gtp_interface.h"
 
 int main() {
-  Go game(3);
-  GTP_interface gtp(&game, true);
+  Go game(2);
+  Solver solver;
+  GTP_interface gtp(&game, &solver, true);
   gtp.listen();
   return 0;
 }

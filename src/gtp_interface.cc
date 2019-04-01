@@ -10,12 +10,17 @@ std::regex GTP_interface::genmove_reg("genmove (b|w)");
 std::regex GTP_interface::undo_reg("undo");
 std::regex GTP_interface::legal_reg("legal_moves (b|w)");
 std::regex GTP_interface::score_reg("score");
+std::regex GTP_interface::quit_reg("quit");
 
 void GTP_interface::listen() {
   std::string cmd;
   while (1) {
     std::getline(std::cin, cmd);
-    execute(cmd);
+    if (std::regex_match(cmd, quit_reg)) {
+      break;
+    } else {
+      execute(cmd);
+    }
   }
 }
 
@@ -63,8 +68,14 @@ bool GTP_interface::play_move_cmd(std::string cmd) {
   return game->make_move(row * game->size() + col, c);
 }
 
-bool GTP_interface::gen_move_cmd(std::string) {
-  return false;
+bool GTP_interface::gen_move_cmd(std::string cmd) {
+  std::string tmp;
+  char color;
+  std::stringstream is(cmd);
+  is >> tmp >> color;
+  Color c = color =='b' ? BLACK : WHITE;
+  int move = solver->solve(game, c);
+  return game->make_move(move, c);
 }
 
 bool GTP_interface::undo_move_cmd() { return game->undo_move(); }

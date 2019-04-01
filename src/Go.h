@@ -24,6 +24,7 @@ class Go {
   int to_move;
   int n;
   int passes;
+  int old_passes;
 
   // private methods
   void switch_to_move();
@@ -39,6 +40,7 @@ class Go {
   void print_board();
   int size();
   bool game_over();
+  static Color opponent(Color c);
 };
 
 

@@ -9,12 +9,14 @@ via GTP
 #include <string>
 #include <regex>
 #include "Go.h"
+#include "solver.h"
 
 
 
 class GTP_interface {
  private:
   Go *game;
+  Solver *solver;
   bool verbose;
   bool execute(std::string cmd);
   void msg_illegal(std::string cmd);
@@ -32,9 +34,11 @@ class GTP_interface {
   static std::regex undo_reg;
   static std::regex legal_reg;
   static std::regex score_reg;
+  static std::regex quit_reg;
 
  public:
-  GTP_interface(Go *_game, bool _verbose) : game(_game), verbose(_verbose) {}
+  GTP_interface(Go *_game, Solver *_solver, bool _verbose) : game(_game),
+    solver(_solver), verbose(_verbose) {}
   void listen();
 };
 
