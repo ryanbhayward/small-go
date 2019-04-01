@@ -10,6 +10,11 @@ int Solver::solve(Go *game, Color c) {
   if (verbose) {
     std::cout << "value: " << r.value << " move: " << r.best_move;
     std::cout << " nodes/sec: " << nodes / dur.count() << std::endl;
+    std::cout << "pv:";
+    for (int m : r.pv) {
+      std::cout << " " << m << " ";
+    }
+    std::cout << std::endl;
   }
   return r.best_move;
 }
@@ -39,10 +44,12 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
     r.value *= -1;
     if (move != PASS_IND) game->undo_move();
 
-    if (d == 0) std::cout << "move: " << move << " score: " << r.value <<std::endl;
     if (r > best) best = r;
 
-    if (r.value > alpha) alpha = r.value;
+    if (r.value > alpha) {
+      alpha = r.value;
+      best.pv.push_front(move);
+    }
     // pruning
     if (alpha >= beta) break;
   }

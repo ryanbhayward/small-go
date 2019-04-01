@@ -2,6 +2,7 @@
 #pragma once
 
 #include<chrono>
+#include <list>
 #include "Go.h"
 
 typedef std::chrono::system_clock Clock;
@@ -11,6 +12,7 @@ struct Result {
   Result() : value(-10000), best_move(-1) {}
   float value;
   int best_move;
+  std::list<int> pv;
 
   // overload relational operators to make search cleaner
   friend inline bool operator<(const Result& l, const Result& r) {
