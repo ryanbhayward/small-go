@@ -175,6 +175,6 @@ void Board::print() {
   }
 }
 
-long Board::empty_points() {
+long Board::empty_points() const {
   return size_mask & ~(stones[BLACK] | stones[WHITE]);
 }

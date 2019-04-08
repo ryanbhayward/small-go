@@ -34,7 +34,7 @@ struct Board {
   void update_zobrist(long group, Color color);
 
   // helper functions
-  long empty_points();
+  long empty_points() const;
   void print();
 
   static long z_table[2][64];
