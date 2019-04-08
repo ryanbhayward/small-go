@@ -2,11 +2,13 @@
 #include "Go.h"
 
 #include <iostream>
+#include <cassert>
 
-Go::Go(int _n) : to_move(BLACK), n(_n), passes(0), old_passes(0) {
+Go::Go(int _n) : to_move(BLACK), n(_n) {
   Board::init_zobrist();
   Board b(_n);
   boards.push(b);
+  passes.push(0);
 }
 
 Go::~Go() {}
@@ -14,22 +16,23 @@ Go::~Go() {}
 int Go::size() { return n; }
 
 bool Go::game_over() {
-  return passes > 1 || (get_legal_moves(BLACK, nullptr) == 0 &&
+  return passes.top() > 1 || (get_legal_moves(BLACK, nullptr) == 0 &&
     get_legal_moves(WHITE, nullptr) == 0);
 }
 
 bool Go::make_move(int point_ind, Color color) {
+  // first copy
+  boards.push(boards.top());
+
   // check for a pass
   if (point_ind == PASS_IND) {
-    ++passes;
+    passes.push(passes.top() + 1);
     if (to_move == color) {
       switch_to_move();
     }
     return true;
   }
 
-  // first copy
-  boards.push(boards.top());
   bool res = boards.top().move(point_ind, color);
   if (!res) {
     boards.pop();
@@ -44,8 +47,7 @@ bool Go::make_move(int point_ind, Color color) {
   }
 
   if (res) {
-    old_passes = passes;
-    passes = 0;
+    passes.push(0);
     if (to_move == color) {
       switch_to_move();
     }
@@ -56,10 +58,13 @@ bool Go::make_move(int point_ind, Color color) {
 bool Go::undo_move() {
   if (boards.size() <= 1) return false;
   const Board& old = boards.top();
-  superko_hist.erase(old.h);
+  int last_passes = passes.top();
+  passes.pop();
+  // don't erase superko hist if popping a pass
+  if (last_passes <= passes.top())  superko_hist.erase(old.h);
   boards.pop();
+  assert(passes.size() == boards.size());
   switch_to_move();
-  passes = old_passes;
   return true;
 }
 
@@ -98,5 +103,7 @@ long Go::get_legal_moves(Color color, std::vector<int> *moves) {
 
   return legal.to_ulong();
 }
+
+Board& Go::get_board() { return boards.top(); }
 
 Color Go::opponent(Color c) { return Board::opponent(c); }

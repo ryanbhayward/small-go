@@ -64,6 +64,9 @@ void test_liberties() {
   assert(b.get_liberties(b.get_group(1 << 1)) == 173);
   b.move(7, WHITE);
   assert(b.get_liberties(b.get_group(1 << 1)) == 45);
+  Board c(2);
+  c.move(0, BLACK);
+  assert(c.get_liberties(c.get_group(1 << 0)) == 6);
 }
 
 void test_empty_points() {
@@ -87,6 +90,10 @@ void test_neighbors() {
   // corner
   assert(b.get_neighbors(1) == 10);
   assert(b.get_neighbors(1 << 6) == 136);
+
+  Board c(2);
+  c.move(0, BLACK);
+  assert(c.get_neighbors(1 << 0) == 6);
 }
 
 void test_groups() {
@@ -104,6 +111,10 @@ void test_groups() {
   assert(b.get_group(1 << 4) == 18);
   assert(b.get_group(1 << 6) == 64);
   assert(b.get_group(1 << 3) == 8);
+
+  Board c(2);
+  c.move(0, BLACK);
+  assert(c.get_group(1 << 0) == 1);
 }
 
 

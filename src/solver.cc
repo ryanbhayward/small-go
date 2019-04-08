@@ -1,6 +1,7 @@
 // Copyright 2019 Chris Solinas
 #include "solver.h"
 #include <iostream>
+#include <algorithm>
 
 int Solver::solve(Go *game, Color c) {
   nodes = 0;
@@ -26,16 +27,21 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
   // generate and sort moves
   std::vector<int> legal_moves;
   game->get_legal_moves(c, &legal_moves);
+  // could use some polymorphism here with a general ordering object
+  if (game->size() == 3) {
+    std::sort(legal_moves.begin(), legal_moves.end(),
+      move_ordering_3x3(game->get_board(), c));
+  } else if (game->size() == 2) {
+    std::sort(legal_moves.begin(), legal_moves.end(), move_ordering_2x2());
+  }
 
-  // for now just use reverse iterator to do pass first heuristic
-  for (auto it = legal_moves.rbegin(); it != legal_moves.rend(); ++it) {
-    int move = *it;
+  for (auto move : legal_moves) {
     game->make_move(move, c);
     Result r = alpha_beta(game, Go::opponent(c), -1 * beta, -1 * alpha, d + 1);
     r.best_move = move;
     // negamax variant
     r.value *= -1;
-    if (move != PASS_IND) game->undo_move();
+    game->undo_move();
 
     if (r > best) best = r;
 
@@ -53,6 +59,7 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
 void Solver::display_results(Result r) {
   auto dur = std::chrono::duration_cast<float_seconds>(Clock::now() - start);
   std::cout << "value: " << r.value << " move: " << r.best_move;
+  std::cout << " nodes: " << nodes;
   std::cout << " nodes/sec: " << nodes / dur.count() << std::endl;
   std::cout << "pv:";
   for (int m : r.pv) {

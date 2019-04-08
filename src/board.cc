@@ -112,6 +112,11 @@ long Board::get_liberties(long group) {
   return get_neighbors(group) & ~(stones[BLACK] | stones[WHITE]);
 }
 
+bool Board::atari(int point_ind) {
+  long group = get_group(1 << point_ind);
+  return __builtin_popcountl(get_liberties(group)) > 1;
+}
+
 long Board::get_group(long board_point) {
   long group = board_point;
   long black_mask = board_point & stones[BLACK];

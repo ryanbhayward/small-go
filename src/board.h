@@ -26,6 +26,7 @@ struct Board {
   long get_neighbors(long group);
   // return the liberties of group
   long get_liberties(long group);
+  bool atari(int point_ind);
   // return the group of stones stone at position point is part of
   long get_group(long board_point);
   float score(Color color);
