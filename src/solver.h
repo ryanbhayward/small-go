@@ -4,6 +4,7 @@
 #include<chrono>
 #include <list>
 #include "Go.h"
+#include "theorems.h"
 
 typedef std::chrono::system_clock Clock;
 typedef std::chrono::duration<float> float_seconds;
@@ -71,16 +72,17 @@ struct move_ordering_2x2 {
   }
 };
 
-
 class Solver {
  private:
   int nodes;
   bool verbose;
   Clock::time_point start;
+  std::vector<Theorem> theorems_3x3;
   Result alpha_beta(Go *game, Color c, float alpha, float beta, int depth);
   void display_results(Result r);
+  void init_theorems_3x3();
 
  public:
-  Solver() : nodes(0), verbose(true) {}
+  Solver();
   int solve(Go *game, Color c);
 };

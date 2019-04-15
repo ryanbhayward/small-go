@@ -1,0 +1,4 @@
+showboard
+genmove b
+showboard
+quit

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <algorithm>
 
+Solver::Solver() : nodes(0), verbose(true) { init_theorems_3x3(); }
+
 int Solver::solve(Go *game, Color c) {
   nodes = 0;
   start = Clock::now();
@@ -22,7 +24,15 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
     return best;
   }
 
-  // TODO(chris): endgame db
+  // TODO(chris): make this way faster by precomputing values
+  if (game->size() == 3) {
+    for (Theorem t : theorems_3x3) {
+      if (t.applies(game->get_board(), c)) {
+        best.value = t.get_value();
+        return best;
+      }
+    }
+  }
 
   // generate and sort moves
   std::vector<int> legal_moves;
@@ -66,5 +76,38 @@ void Solver::display_results(Result r) {
     std::cout << " " << m << " ";
   }
   std::cout << std::endl;
+}
+
+void Solver::init_theorems_3x3() {
+  // ...
+  // xxx
+  // ...
+  std::vector<long> lib_masks;
+  lib_masks.push_back(365);
+  theorems_3x3.push_back(Theorem(146, lib_masks, 9));
+  lib_masks.clear();
+  lib_masks.push_back(455);
+  theorems_3x3.push_back(Theorem(56, lib_masks, 9));
+
+  // ...
+  // xx.
+  // .x.
+  lib_masks.clear();
+  lib_masks.push_back(1);
+  lib_masks.push_back(484);
+  theorems_3x3.push_back(Theorem(26, lib_masks, 9));
+  lib_masks.clear();
+  lib_masks.push_back(64);
+  lib_masks.push_back(295);
+  theorems_3x3.push_back(Theorem(152, lib_masks, 9));
+  lib_masks.clear();
+  lib_masks.push_back(4);
+  lib_masks.push_back(79);
+  theorems_3x3.push_back(Theorem(176, lib_masks, 9));
+  lib_masks.clear();
+  lib_masks.push_back(256);
+  lib_masks.push_back(457);
+  theorems_3x3.push_back(Theorem(50, lib_masks, 9));
+
 }
 

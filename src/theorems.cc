@@ -9,3 +9,5 @@ bool Theorem::applies(const Board& b, Color c) {
 
   return match;
 }
+
+float Theorem::get_value() { return value; }
