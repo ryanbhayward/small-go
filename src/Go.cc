@@ -80,14 +80,14 @@ void Go::switch_to_move() {
 }
 
 /**
- * Should probably change the name. This now only turns the empty points
+ * This only turns the empty points
  * into a vector with the pass move included to save time. We check for
  * legality when we make the move.
  *
  * nullptr is a valid parameter value for moves if we just care to test
  * that there are legal moves
  **/
-long Go::get_legal_moves(Color color, std::vector<int> *moves) {
+long Go::get_moves(std::vector<int> *moves) {
   if (moves != nullptr)  moves->clear();
   std::bitset<64> legal(boards.top().empty_points());
   for (int i = 0; i < n*n; i++) {

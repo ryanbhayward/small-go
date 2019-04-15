@@ -36,7 +36,7 @@ class Go {
   bool make_move(int point_ind, Color color);
   bool undo_move();
   float score(Color color);
-  long get_legal_moves(Color color, std::vector<int> *moves);
+  long get_moves(std::vector<int> *moves);
   void print_board();
   int size();
   bool game_over();

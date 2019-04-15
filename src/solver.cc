@@ -27,7 +27,6 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
     return best;
   }
 
-  // TODO(chris): make this way faster by precomputing values
   if (game->size() == 3) {
     for (Theorem t : theorems_3x3) {
       if (t.applies(game->get_board(), c)) {
@@ -38,17 +37,17 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
   }
 
   // generate and sort moves
-  std::vector<int> legal_moves;
-  game->get_legal_moves(c, &legal_moves);
+  std::vector<int> moves;
+  game->get_moves(&moves);
   // could use some polymorphism here with a general ordering object
   if (game->size() == 3) {
-    std::sort(legal_moves.begin(), legal_moves.end(),
+    std::sort(moves.begin(), moves.end(),
       move_ordering_3x3(game->get_board(), c));
   } else if (game->size() == 2) {
-    std::sort(legal_moves.begin(), legal_moves.end(), move_ordering_2x2());
+    std::sort(moves.begin(), moves.end(), move_ordering_2x2());
   }
 
-  for (auto move : legal_moves) {
+  for (auto move : moves) {
     bool legal = game->make_move(move, c);
     if (!legal) continue;
     Result r = alpha_beta(game, Go::opponent(c), -1 * beta, -1 * alpha, d + 1);

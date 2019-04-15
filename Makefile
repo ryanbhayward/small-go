@@ -19,7 +19,7 @@ TESTS:=${TEST_SRC:$(TEST_DIR)/%.cc=$(TEST_OUT_DIR)/%}
 .PHONY: all release test memtest debug check contribute static style clean
 
 all: directories small_go
-release: CFLAGS += -O2 
+release: CFLAGS += -O3 
 release: all
 test: directories $(TESTS)
 	for t in $(TESTS); do echo "$$t"; $$t || exit -1; done
