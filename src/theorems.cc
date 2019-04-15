@@ -1,3 +1,4 @@
+// Copyright 2019 Chris Solinas
 #include "theorems.h"
 
 bool Theorem::applies(const Board& b, Color c) {

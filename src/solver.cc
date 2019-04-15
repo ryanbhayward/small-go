@@ -49,7 +49,8 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
   }
 
   for (auto move : legal_moves) {
-    game->make_move(move, c);
+    bool legal = game->make_move(move, c);
+    if (!legal) continue;
     Result r = alpha_beta(game, Go::opponent(c), -1 * beta, -1 * alpha, d + 1);
     r.best_move = move;
     // negamax variant
@@ -117,6 +118,5 @@ void Solver::init_theorems_3x3() {
   lib_masks.push_back(256);
   lib_masks.push_back(457);
   theorems_3x3.push_back(Theorem(50, lib_masks, 9));
-
 }
 

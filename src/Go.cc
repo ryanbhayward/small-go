@@ -16,8 +16,7 @@ Go::~Go() {}
 int Go::size() { return n; }
 
 bool Go::game_over() {
-  return passes.top() > 1 || (get_legal_moves(BLACK, nullptr) == 0 &&
-    get_legal_moves(WHITE, nullptr) == 0);
+  return passes.top() > 1;
 }
 
 bool Go::make_move(int point_ind, Color color) {
@@ -81,6 +80,10 @@ void Go::switch_to_move() {
 }
 
 /**
+ * Should probably change the name. This now only turns the empty points
+ * into a vector with the pass move included to save time. We check for
+ * legality when we make the move.
+ *
  * nullptr is a valid parameter value for moves if we just care to test
  * that there are legal moves
  **/
@@ -89,12 +92,8 @@ long Go::get_legal_moves(Color color, std::vector<int> *moves) {
   std::bitset<64> legal(boards.top().empty_points());
   for (int i = 0; i < n*n; i++) {
     if (legal.test(i)) {
-      if (make_move(i, color)) {
-        undo_move();
-        if (moves != nullptr) moves->push_back(i);
-      } else {
-        legal.reset(i);
-      }
+      if (moves != nullptr)
+        moves->push_back(i);
     }
   }
 

@@ -9,7 +9,7 @@
 typedef std::chrono::system_clock Clock;
 typedef std::chrono::duration<float> float_seconds;
 
-constexpr long MAX_NODES = -1;
+constexpr long MAX_NODES = 0;
 
 struct Result {
   Result() : value(-1 * MAX_VAL), best_move(-2) {}
