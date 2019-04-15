@@ -42,7 +42,7 @@ struct move_ordering_3x3 {
 
   // i > j functor for move ordering
   bool operator()(int i, int j) const {
-    Board b_i(b), b_j(j);
+    Board b_i(b), b_j(b);
     bool res_i, res_j;
     res_i = b_i.move(i, c);
     res_j = b_j.move(j, c);

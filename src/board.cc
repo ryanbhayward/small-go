@@ -114,7 +114,7 @@ long Board::get_liberties(long group) {
 
 bool Board::atari(int point_ind) {
   long group = get_group(1 << point_ind);
-  return __builtin_popcountl(get_liberties(group)) > 1;
+  return __builtin_popcountl(get_liberties(group)) <= 1;
 }
 
 long Board::get_group(long board_point) {
@@ -164,6 +164,7 @@ void Board::print() {
   std::bitset<64> b(stones[BLACK]);
   std::bitset<64> w(stones[WHITE]);
   Color color;
+  std::cout << std::endl;
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       color = EMPTY;
@@ -173,6 +174,7 @@ void Board::print() {
     }
     std::cout << std::endl;
   }
+  std::cout << std::endl;
 }
 
 long Board::empty_points() const {

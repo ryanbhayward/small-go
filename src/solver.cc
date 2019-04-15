@@ -8,7 +8,8 @@ Solver::Solver() : nodes(0), verbose(true) { init_theorems_3x3(); }
 int Solver::solve(Go *game, Color c) {
   nodes = 0;
   start = Clock::now();
-  Result r = alpha_beta(game, c, -1 * MAX_VAL, MAX_VAL, 0);
+  int max_score = game->size() * game->size();
+  Result r = alpha_beta(game, c, -1.0 * max_score, 1.0 * max_score, 0);
   if (verbose) {
     display_results(r);
   }
@@ -29,6 +30,7 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
     for (Theorem t : theorems_3x3) {
       if (t.applies(game->get_board(), c)) {
         best.value = t.get_value();
+        //std::cout << "Hit" << std::endl;
         return best;
       }
     }
