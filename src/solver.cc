@@ -20,7 +20,9 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
   Result best;
   nodes += 1;
 
-  if (game->game_over()) {
+  if (nodes % 100000000 == 0) display_intermediate();
+
+  if (game->game_over() || (MAX_NODES > 0 && nodes > MAX_NODES)) {
     best.value = game->score(c);
     return best;
   }
@@ -30,7 +32,6 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
     for (Theorem t : theorems_3x3) {
       if (t.applies(game->get_board(), c)) {
         best.value = t.get_value();
-        //std::cout << "Hit" << std::endl;
         return best;
       }
     }
@@ -66,6 +67,12 @@ Result Solver::alpha_beta(Go *game, Color c, float alpha, float beta, int d) {
   }
 
   return best;
+}
+
+void Solver::display_intermediate() {
+  auto dur = std::chrono::duration_cast<float_seconds>(Clock::now() - start);
+  std::cout << "nodes: " << nodes;
+  std::cout << " nodes/sec: " << nodes / dur.count() << std::endl;
 }
 
 void Solver::display_results(Result r) {

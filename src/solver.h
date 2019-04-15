@@ -9,6 +9,8 @@
 typedef std::chrono::system_clock Clock;
 typedef std::chrono::duration<float> float_seconds;
 
+constexpr long MAX_NODES = -1;
+
 struct Result {
   Result() : value(-1 * MAX_VAL), best_move(-2) {}
   float value;
@@ -74,12 +76,13 @@ struct move_ordering_2x2 {
 
 class Solver {
  private:
-  int nodes;
+  long nodes;
   bool verbose;
   Clock::time_point start;
   std::vector<Theorem> theorems_3x3;
   Result alpha_beta(Go *game, Color c, float alpha, float beta, int depth);
   void display_results(Result r);
+  void display_intermediate();
   void init_theorems_3x3();
 
  public:
