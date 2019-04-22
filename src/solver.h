@@ -10,12 +10,25 @@ typedef std::chrono::system_clock Clock;
 typedef std::chrono::duration<float> float_seconds;
 
 constexpr long MAX_NODES = 0;
+constexpr int UNDEFINED = -2;
 
 struct Result {
-  Result() : value(-1 * MAX_VAL), best_move(-2) {}
+  Result() : value(-1 * MAX_VAL), best_move(UNDEFINED), terminal(false),
+    benson(false) {}
   float value;
   int best_move;
+  bool terminal;
+  bool benson;
   std::list<int> pv;
+
+  bool is_undefined() { return !terminal; }
+
+  void reset() {
+    value = -1 * MAX_VAL;
+    best_move = UNDEFINED;
+    terminal = false;
+    benson = false;
+  }
 
   // overload relational operators to make search cleaner
   friend inline bool operator<(const Result& l, const Result& r) {
@@ -80,8 +93,9 @@ class Solver {
   bool verbose;
   Clock::time_point start;
   std::vector<Theorem> theorems_3x3;
-  Result alpha_beta(Go *game, Color c, float alpha, float beta, int depth);
-  void display_results(Result r);
+  Result alpha_beta(Go *game, Color c, float alpha, float beta, int depth,
+      int max_depth);
+  void display_results(Result r, int max_depth);
   void display_intermediate();
   void init_theorems_3x3();
 
