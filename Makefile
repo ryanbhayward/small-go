@@ -30,7 +30,7 @@ debug: all test
 check: CFLAGS += -Werror
 check: all
 contribute: check static style test memtest
-directories: $(OUT_DIR) $(SRC_OUT_DIR) $(TEST_OUT_DIR) $(TMXLITE_OUT_DIR) $(PUGIXML_OUT_DIR) $(EASYLOGGING_OUT_DIR)
+directories: $(OUT_DIR) $(SRC_OUT_DIR) $(TEST_OUT_DIR) 
 
 small_go: $(OBJS) $(OUT_DIR)/main.o
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $(OUT_DIR)/small_go
