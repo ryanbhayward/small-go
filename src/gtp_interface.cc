@@ -7,14 +7,16 @@
 std::regex GTP_interface::show_reg("showboard");
 std::regex GTP_interface::move_reg("play (b|w) [[:alpha:]][[:digit:]]");
 std::regex GTP_interface::genmove_reg("genmove (b|w)");
+std::regex GTP_interface::genmove_binary_reg("genmove (b|w) -?[[:digit:]]+");
 std::regex GTP_interface::undo_reg("undo");
-std::regex GTP_interface::legal_reg("legal_moves (b|w)");
+std::regex GTP_interface::legal_reg("legal (b|w)");
 std::regex GTP_interface::score_reg("score");
 std::regex GTP_interface::quit_reg("quit");
 
 void GTP_interface::listen() {
   std::string cmd;
   while (1) {
+    if (std::cin.eof()) break;
     std::getline(std::cin, cmd);
     if (std::regex_match(cmd, quit_reg)) {
       break;
@@ -33,6 +35,8 @@ bool GTP_interface::execute(std::string cmd) {
     legal = play_move_cmd(cmd);
   } else if (std::regex_match(cmd, genmove_reg)) {
     legal = gen_move_cmd(cmd);
+  } else if (std::regex_match(cmd, genmove_binary_reg)) {
+    legal = gen_move_binary_cmd(cmd);
   } else if (std::regex_match(cmd, undo_reg)) {
     legal = undo_move_cmd();
   } else if (std::regex_match(cmd, legal_reg)) {
@@ -75,6 +79,17 @@ bool GTP_interface::gen_move_cmd(std::string cmd) {
   is >> tmp >> color;
   Color c = color =='b' ? BLACK : WHITE;
   int move = solver->solve(game, c);
+  return game->make_move(move, c);
+}
+
+bool GTP_interface::gen_move_binary_cmd(std::string cmd) {
+  std::string tmp;
+  char color;
+  int max_value;
+  std::stringstream is(cmd);
+  is >> tmp >> color >> max_value;
+  Color c = color =='b' ? BLACK : WHITE;
+  int move = solver->solve(game, c, max_value);
   return game->make_move(move, c);
 }
 

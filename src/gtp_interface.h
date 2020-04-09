@@ -24,6 +24,7 @@ class GTP_interface {
   bool show_board_cmd();
   bool play_move_cmd(std::string cmd);
   bool gen_move_cmd(std::string cmd);
+  bool gen_move_binary_cmd(std::string cmd);
   bool undo_move_cmd();
   bool get_legal_moves_cmd(std::string cmd);
   bool score_cmd();
@@ -31,6 +32,7 @@ class GTP_interface {
   static std::regex show_reg;
   static std::regex move_reg;
   static std::regex genmove_reg;
+  static std::regex genmove_binary_reg;
   static std::regex undo_reg;
   static std::regex legal_reg;
   static std::regex score_reg;
