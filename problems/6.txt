@@ -1,7 +1,6 @@
-play b b2
+play b a1
 play w b1
-play b c2
-play w a2
 showboard
 genmove b
+showboard
 quit

@@ -1,4 +1,0 @@
-play b a1
-play w b2
-genmove b
-quit

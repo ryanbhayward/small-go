@@ -1,7 +1,8 @@
-play b c2
-play w b1
-play b b2
+play w b2
+play w a3
 play w b3
+play w a2
+play w c3
 showboard
 genmove b
 showboard

@@ -1,5 +1,5 @@
-play b b3
-play w b2
+play b a1
+play w b3
 showboard
 genmove b
 showboard
