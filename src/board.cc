@@ -2,6 +2,7 @@
 #include "board.h"
 
 #include <iostream>
+#include <sstream>
 
 std::map<int, char> color_chars = {
   {EMPTY, '.'}, {BLACK, 'b'}, {WHITE, 'w'}
@@ -95,6 +96,11 @@ bool Board::move(int point_ind, Color color) {
   return get_liberties(group) != 0;
 }
 
+bool Board::fills_eye(int move, Color c) {
+  long neighbors = get_neighbors(1 << move);
+  return (neighbors & stones[c]) == neighbors;
+}
+
 long Board::get_neighbors(long group) {
   long neighbors = 0;
   // shift left, remove right border neighbors
@@ -160,7 +166,7 @@ float Board::score(Color color) {
   return score;
 }
 
-void Board::print() {
+void Board::print() const {
   std::bitset<64> b(stones[BLACK]);
   std::bitset<64> w(stones[WHITE]);
   Color color;
@@ -179,4 +185,13 @@ void Board::print() {
 
 long Board::empty_points() const {
   return size_mask & ~(stones[BLACK] | stones[WHITE]);
+}
+
+std::string Board::get_point_coord(int point_ind, int _n) {
+  if (point_ind < 0) return "pass";
+  int row = point_ind / _n;
+  int col = point_ind % _n;
+  std::stringstream ss;
+  ss << static_cast<char>('a' + row) << col + 1;
+  return ss.str();
 }

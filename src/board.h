@@ -32,11 +32,14 @@ struct Board {
   float score(Color color);
   static Color opponent(Color color);
   void update_zobrist(long group, Color color);
+  bool fills_eye(int move, Color c);
 
   // helper functions
   long empty_points() const;
-  void print();
+  void print() const;
+  static std::string get_point_coord(int point_ind, int _n);
 
   static long z_table[2][64];
   static void init_zobrist();
 };
+

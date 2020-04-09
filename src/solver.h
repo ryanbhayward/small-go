@@ -3,6 +3,7 @@
 
 #include<chrono>
 #include <list>
+#include <map>
 #include "Go.h"
 #include "theorems.h"
 
@@ -13,7 +14,7 @@ constexpr long MAX_NODES = 0;
 constexpr int UNDEFINED = -2;
 
 struct Result {
-  Result() : value(-1 * MAX_VAL), best_move(UNDEFINED), terminal(false),
+  Result() : value(-1*MAX_VAL), best_move(UNDEFINED), terminal(false),
     benson(false) {}
   float value;
   int best_move;
@@ -45,15 +46,26 @@ struct Result {
   }
 };
 
+struct TT_entry {
+  TT_entry() {}
+  TT_entry(Result r, Color c, int d) : res(r), to_move(c), max_depth(d) {}
+  Result res;
+  Color to_move;
+  int max_depth;
+};
+
 static constexpr int side_rank[9] = {0, 1, 0, 1, 2, 1, 0, 1, 0};
+
+static int killer_table[MAX_DEPTH] = {-2};
 
 struct move_ordering_3x3 {
  private:
   Board& b;
   Color c;
+  int depth;
 
  public:
-  move_ordering_3x3(Board& _b, Color _c) : b(_b), c(_c) {}
+  move_ordering_3x3(Board& _b, Color _c, int d) : b(_b), c(_c), depth(d) {}
 
   // i > j functor for move ordering
   bool operator()(int i, int j) const {
@@ -61,6 +73,11 @@ struct move_ordering_3x3 {
     bool res_i, res_j;
     res_i = b_i.move(i, c);
     res_j = b_j.move(j, c);
+
+    // if one of them is the killer and legal, it has highest priority
+    if (res_i && killer_table[depth] == i && !b_i.atari(i)) return true;
+    if (res_j && killer_table[depth] == j && !b_j.atari(j)) return false;
+
 
     // make sure the moves are legal and they don't put c into atari
     if (!res_i || b_i.atari(i)) return false;
@@ -72,11 +89,10 @@ struct move_ordering_3x3 {
     if (score_i > score_j) return true;
     if (score_i < score_j) return false;
 
-    // break ties with location of move heuristic
-    // prefer to move instead of pass
-    if (i < 0) return false;
-    if (j < 0) return true;
+    if (i < 0) return true;
+    if (j < 0) return false;
 
+    // break ties with location of move heuristic
     return side_rank[i] > side_rank[j];
   }
 };
@@ -92,14 +108,17 @@ class Solver {
   long nodes;
   bool verbose;
   Clock::time_point start;
-  std::vector<Theorem> theorems_3x3;
+  std::vector<Theorem*> theorems_3x3;
+  std::vector<int> theorem_hits;
+  std::map<long, TT_entry> TT;
   Result alpha_beta(Go *game, Color c, float alpha, float beta, int depth,
       int max_depth);
-  void display_results(Result r, int max_depth);
-  void display_intermediate();
+  void display_results(Result r, int max_depth, int board_size);
   void init_theorems_3x3();
+  void clean_theorems_3x3();
 
  public:
   Solver();
   int solve(Go *game, Color c);
+  int solve(Go *game, Color c, int max_depth);
 };

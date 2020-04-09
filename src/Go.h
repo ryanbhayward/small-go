@@ -18,6 +18,7 @@
 
 constexpr int PASS_IND = -1;
 constexpr int MAX_VAL = 100000;
+constexpr int MAX_DEPTH = 180;
 
 class Go {
   std::stack<Board> boards;
@@ -26,7 +27,6 @@ class Go {
   int n;
   std::stack<int> passes;
 
-  // private methods
   void switch_to_move();
 
  public:
@@ -40,6 +40,8 @@ class Go {
   void print_board();
   int size();
   bool game_over();
+  bool fills_eye(int point_ind, Color c);
+  bool last_move_was_pass();
   static Color opponent(Color c);
   Board& get_board();
 };
