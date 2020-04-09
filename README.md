@@ -2,6 +2,40 @@
 Efficient implementation of Go with positional superko for solving games
 on up to 8x8 boards. Used in CMPUT 355 and CMPUT 497 at the University of Alberta.
 
+Also includes an implementation of a solver that can solve provided 3x3 
+positions with the following assumptions for any legal history leading to
+positions:
+```
+.b.
+.b.
+.b.
+```
+results in a score of +9 for black,
+```
+.b.
+bb.
+...
+```
+results in a score of +9 for black,
+```
+b..
+...
+...
+```
+results in a score of -9 for black,
+```
+bbb
+...
+...
+```
+results in a score of -9 for black, and
+```
+bb.
+...
+...
+```
+results in a score of +3 for black.
+
 ## Installation instructions
 Typing `make` will produce the executable in `small-go/bin`. 
 
@@ -14,7 +48,7 @@ Typing `make` will produce the executable in `small-go/bin`.
 
 Some sample positions are located in `small-go/problems`. These use gtp to set up the board and test the solver. For example,
 
-``` bin/small-go < problems/middle.txt```
+``` bin/small-go < problems/1.txt```
 
 will create the position:
 ```
