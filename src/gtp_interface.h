@@ -7,6 +7,8 @@ via GTP
 **/
 
 #include <string>
+#include <iostream>
+#include <sstream>
 #include <regex>
 #include "Go.h"
 #include "solver.h"
