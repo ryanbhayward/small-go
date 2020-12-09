@@ -1,0 +1,7 @@
+showboard
+play b a1
+play w b2
+play b a2
+play w b1
+genmove b
+quit
